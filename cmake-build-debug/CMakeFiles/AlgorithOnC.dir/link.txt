@@ -1,0 +1,3 @@
+"D:\CLion\CLion 2020.3.3\bin\cmake\win\bin\cmake.exe" -E rm -f CMakeFiles\AlgorithOnC.dir/objects.a
+D:\MinGWx64\mingw64\bin\ar.exe cr CMakeFiles\AlgorithOnC.dir/objects.a @CMakeFiles\AlgorithOnC.dir\objects1.rsp
+D:\MinGWx64\mingw64\bin\g++.exe -g   -Wl,--whole-archive CMakeFiles\AlgorithOnC.dir/objects.a -Wl,--no-whole-archive  -o AlgorithOnC.exe -Wl,--out-implib,libAlgorithOnC.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\AlgorithOnC.dir\linklibs.rsp

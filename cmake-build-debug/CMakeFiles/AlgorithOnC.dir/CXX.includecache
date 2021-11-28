@@ -1,0 +1,28 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+C:/Users/dom/Desktop/GC course work/AlgorithOnC/GC_algorithm.cpp
+iostream
+-
+vector
+-
+memory
+-
+cstdlib
+-
+
+C:/Users/dom/Desktop/GC course work/AlgorithOnC/main.cpp
+iostream
+-
+thread
+-
+mutex
+-
+GC_algorithm.cpp
+C:/Users/dom/Desktop/GC course work/AlgorithOnC/GC_algorithm.cpp
+

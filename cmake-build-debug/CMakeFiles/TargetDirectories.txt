@@ -1,0 +1,3 @@
+C:/Users/dom/Desktop/GC course work/AlgorithOnC/cmake-build-debug/CMakeFiles/AlgorithOnC.dir
+C:/Users/dom/Desktop/GC course work/AlgorithOnC/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/dom/Desktop/GC course work/AlgorithOnC/cmake-build-debug/CMakeFiles/rebuild_cache.dir
