@@ -2,11 +2,13 @@
 #include <vector>
 #include <memory>
 #include <cstdlib>
+#include <fstream>
 using namespace std;
 
 class Simple_object {
 private:
     string value;
+
 
 public:
     explicit Simple_object(string value) : value(std::move(value)) {}
@@ -24,6 +26,8 @@ public:
 class GC_Generator{
 private:
     vector<shared_ptr<Simple_object>> simple_objects;
+    int count_deleted;
+    ofstream data_file;
 
 public:
     void Add_objects(int count){
@@ -41,6 +45,7 @@ public:
     void Delete_some_link(){
         int index = rand()%simple_objects.size();
         simple_objects.erase(simple_objects.begin()+index);
+        count_deleted++;
     }
 
     const vector<shared_ptr<Simple_object>> &getSimpleObjects() const {
@@ -51,12 +56,37 @@ public:
         simple_objects = simpleObjects;
     }
 
+    int getCountDeleted() const {
+        return count_deleted;
+    }
+
+    void setCountDeleted(int countDeleted) {
+        count_deleted = countDeleted;
+    }
+
     void Show_content(){
         for(const auto & simple_object : simple_objects){
             cout << simple_object->getValue()<<" "<< simple_object.use_count() << endl;
         }
     }
 
+    void Create_file_with_data(){
+        data_file.open("../data.csv",ios_base::app);
+        if(data_file.is_open()){
+            data_file<<"Objects," << simple_objects.size()<<endl;
+            data_file<<endl;
+            for(const auto & simple_object : simple_objects) {
+                data_file<<"Object name," << simple_object->getValue()<<","<<"Links,"<< simple_object.use_count()<<endl;
+            }
+            data_file<<endl;
+            data_file<<"Links was deleted,"<<count_deleted<<endl;
+            data_file<<endl;
+        }
+        data_file.flush();
+        data_file.close();
+        count_deleted = 0;
+
+    }
 
 };
 

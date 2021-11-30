@@ -4,28 +4,22 @@
 #include "GC_algorithm.cpp"
 using namespace std;
 
-void perform_task(){
-    cout << "Task perform!" << endl;
-
-}
 int main() {
 //    mutex first_mutex;
+int objects_quantity = 10;
     GC_Generator generator;
-    generator.Add_objects(10);
-    generator.Show_content();
-    cout<<endl;
+    generator.Add_objects(objects_quantity);
 
-    generator.Add_some_link();
-    generator.Add_some_link();
-    generator.Show_content();
-    cout<<endl;
+    for(int i =0;i<100;i++) {
+        generator.Add_some_link();
+    }
+    generator.Create_file_with_data();
 
-    generator.Delete_some_link();
-    generator.Show_content();
+    generator.Create_file_with_data();
+    for(int i =0;i<50;i++) {
+        generator.Delete_some_link();
+    }
+    generator.Create_file_with_data();
 
-//    thread gc_thread(Garbage_collector::gc_algorithm);
-//    gc_thread.join();
-//    thread task_thread(perform_task);
-//    task_thread.detach();
     return 0;
 }
