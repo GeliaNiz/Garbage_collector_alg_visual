@@ -3,6 +3,14 @@
 #include <memory>
 #include <cstdlib>
 #include <fstream>
+#include <windows.h>
+#include <cstdio>
+#include <psapi.h>
+
+#define DIV 1048576
+#define WIDTH 7
+
+
 using namespace std;
 
 class Simple_object {
@@ -27,12 +35,11 @@ class GC_Generator{
 private:
     vector<shared_ptr<Simple_object>> simple_objects;
     int count_deleted;
-    ofstream data_file;
 
 public:
     void Add_objects(int count){
         for(int i = count;i>0;i--){
-            simple_objects.push_back(static_cast<const shared_ptr<Simple_object>>(new Simple_object("fff")));
+            simple_objects.push_back(static_cast<const shared_ptr<Simple_object>>(new Simple_object("Object"+to_string(i))));
         }
     }
 
@@ -70,23 +77,20 @@ public:
         }
     }
 
-    void Create_file_with_data(){
-        data_file.open("../data.csv",ios_base::app);
-        if(data_file.is_open()){
-            data_file<<"Objects," << simple_objects.size()<<endl;
-            data_file<<endl;
+    void Create_file_with_data(ofstream& data_file){
+        MEMORYSTATUSEX statex;
+        statex.dwLength = sizeof (statex);
+        GlobalMemoryStatusEx (&statex);
             for(const auto & simple_object : simple_objects) {
-                data_file<<"Object name," << simple_object->getValue()<<","<<"Links,"<< simple_object.use_count()<<endl;
+                data_file<<simple_objects.size()<<","<<statex.dwMemoryLoad<<","<<
+                statex.ullAvailPhys<<","<<simple_object->getValue()<<","<<
+                simple_object.use_count()<<","<<count_deleted;
+                data_file<<endl;
+                data_file.flush();
             }
-            data_file<<endl;
-            data_file<<"Links was deleted,"<<count_deleted<<endl;
-            data_file<<endl;
+            count_deleted = 0;
+//        data_file.flush();
         }
-        data_file.flush();
-        data_file.close();
-        count_deleted = 0;
-
-    }
 
 };
 

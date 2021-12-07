@@ -17,6 +17,12 @@ cstdlib
 -
 fstream
 -
+windows.h
+-
+cstdio
+-
+psapi.h
+-
 
 C:/Users/dom/Desktop/GC course work/AlgorithOnC/main.cpp
 iostream
@@ -24,6 +30,12 @@ iostream
 thread
 -
 mutex
+-
+windows.h
+-
+stdio.h
+-
+psapi.h
 -
 GC_algorithm.cpp
 C:/Users/dom/Desktop/GC course work/AlgorithOnC/GC_algorithm.cpp

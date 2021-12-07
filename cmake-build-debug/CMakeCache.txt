@@ -250,6 +250,9 @@ CMAKE_STRIP:FILEPATH=D:/MinGWx64/mingw64/bin/strip.exe
 // Studio IDE projects all commands are done without /nologo.
 CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE
 
+//Path to a library.
+PSAPI:FILEPATH=PSAPI-NOTFOUND
+
 
 ########################
 # INTERNAL cache entries

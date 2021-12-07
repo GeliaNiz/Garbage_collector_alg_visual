@@ -1,30 +1,23 @@
 import plotly
+import pandas as pd
+from plotly.subplots import make_subplots
+import plotly.graph_objects as go
 import csv
+from sys import getsizeof
 from plotly.graph_objs import Scatter, Layout
 
-source_data_file = open("data.csv")
-reader_source_data = csv.reader(source_data_file, delimiter=',')
+source_data = pd.read_csv('data.csv')
 
-data_links = []
-data_name = []
-data_objects = []
-for row in reader_source_data:
-    print(len(row))
-    if len(row) > 2:
-        data_links.append(row[3])
-        data_name.append(row[1])
-    if len(row) == 2:
-        data_objects.append(row[1])
+print(source_data)
 
-source_data_file.close()
-print(data_links)
-print(data_objects)
+fig = make_subplots(rows=2, cols=1)
 
-plotly.offline.plot({
-    "data": [Scatter(x=data_name, y=data_links)],
-    "layout": Layout(title="simle links data")
 
-})
+fig.append_trace(go.Bar(x=source_data['Object name'], y=source_data['Links'],
+                    ), row=1, col=1)
+fig.update_layout(height=600, width=1100, title_text="Stacked Subplots")
+fig.show()
+
 
 
 
