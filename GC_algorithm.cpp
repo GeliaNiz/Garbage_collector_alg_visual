@@ -54,8 +54,7 @@ public:
     //функции достигает 0, то удаляется и сам объект
     void Delete_some_link(){
         int index = rand()%simple_objects.size();
-            simple_objects[index].reset();
-        cout<<"delete "<<simple_objects[index]<<"size "<<simple_objects.size()<<endl;
+        simple_objects[index].reset();
         count_deleted++;
     }
 

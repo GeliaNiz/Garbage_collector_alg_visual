@@ -6,57 +6,61 @@
 using namespace std;
 
 mutex m1;
+fstream data_file;
 
+void write_data(fstream &file, GC_Generator &generator){
+    generator.Create_file_with_data(file);
+    this_thread::sleep_for(chrono::milliseconds(100));
+}
 void do_something(int times, GC_Generator &generator){
     for (int i = 0; i < times; i++) {
         generator.Add_some_link();
+        this_thread::sleep_for(chrono::milliseconds(100));
     }
 }
 void clear_something(int times, GC_Generator &generator){
     for (int i = 0; i < times; i++) {
         generator.Delete_some_link();
+        this_thread::sleep_for(chrono::milliseconds(100));
     }
 }
-
+void add_objects(int quantity, GC_Generator &generator){
+    generator.Add_objects(quantity);
+    this_thread::sleep_for(chrono::milliseconds(300));
+}
 int main() {
 
     //Стартовое число объектов
-    int objects_quantity = 100;
+    int objects_quantity = 40;
 
     //Создаем генератор и стартовые объекты
     GC_Generator generator;
     generator.Add_objects(objects_quantity);
 
     //Открываем поток записи данных в файл
-    fstream data_file;
+
     data_file.open("../data.csv",ios::app| ios::ate);
     data_file <<"Total objects,Total memory in use,Object name,Links,Object size,Links deleted"<<endl;
-
     generator.Create_file_with_data(data_file);
 
     if(data_file.is_open()) {
 
     //Работа с потоками
 
-        m1.lock();
-        thread t1(do_something, 1000, ref(generator));
-        this_thread::sleep_for(chrono::milliseconds(100));
-        generator.Create_file_with_data(data_file);
-        m1.unlock();
+        thread t1(do_something, 70, ref(generator));
 
-        generator.Create_file_with_data(data_file);
+        thread t2(clear_something,30, ref(generator));
 
-        m1.lock();
-        thread t2(clear_something, 200, ref(generator));
-        generator.Create_file_with_data(data_file);
-        this_thread::sleep_for(chrono::milliseconds(100));
-        m1.unlock();
+        thread t3(add_objects,40,ref(generator));
 
+        thread t4(write_data, ref(data_file), ref(generator));
 
         t1.join();
         t2.join();
-
+        t3.join();
+        t4.join();
     }
+    generator.Create_file_with_data(data_file);
     data_file.close();
 
     return 0;
