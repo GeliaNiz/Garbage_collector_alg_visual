@@ -8,13 +8,11 @@ from plotly.graph_objs import Scatter, Layout
 
 source_data = pd.read_csv('data.csv')
 
-print(source_data)
 
 fig = make_subplots(rows=2, cols=1, vertical_spacing=0.5)
 
 
-fig.append_trace(go.Bar(x=source_data['Object name'], y=source_data['Links'],
-                    ), row=1, col=1)
+fig.append_trace(go.Bar(x=source_data['Object name'], y=source_data['Links']), row=1, col=1)
 
 fig.append_trace(go.Scatter(x=source_data['Total objects'], y=source_data['Total memory in use']),
                  row=2, col=1)

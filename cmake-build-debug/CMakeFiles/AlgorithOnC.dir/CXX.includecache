@@ -15,13 +15,9 @@ memory
 -
 cstdlib
 -
-mutex
-C:/Users/dom/Desktop/GC course work/AlgorithOnC/mutex
-shared_mutex
+windows.h
 -
 fstream
--
-windows.h
 -
 sys/time.h
 -
