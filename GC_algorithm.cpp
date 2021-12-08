@@ -2,13 +2,10 @@
 #include <vector>
 #include <memory>
 #include <cstdlib>
+#include "mutex"
+#include <shared_mutex>
 #include <fstream>
 #include <windows.h>
-#include <cstdio>
-#include <psapi.h>
-
-#define DIV 1048576
-#define WIDTH 7
 
 
 using namespace std;
@@ -34,7 +31,8 @@ public:
 class GC_Generator{
 private:
     vector<shared_ptr<Simple_object>> simple_objects;
-    int count_deleted;
+    int count_deleted = 0;
+    mutex my_mutex;
 
 public:
     void Add_objects(int count){
@@ -47,11 +45,15 @@ public:
         int index = rand()%simple_objects.size();
        shared_ptr<Simple_object> pointer = simple_objects[index];
        simple_objects.push_back(pointer);
+       cout<<"add "<<simple_objects[index]<<endl;
     }
 
     void Delete_some_link(){
         int index = rand()%simple_objects.size();
-        simple_objects.erase(simple_objects.begin()+index);
+        if(simple_objects[index].use_count()>1) {
+            simple_objects[index].reset();
+        }
+        cout<<"delete "<<simple_objects[index]<<"size "<<simple_objects.size()<<endl;
         count_deleted++;
     }
 
@@ -77,19 +79,21 @@ public:
         }
     }
 
-    void Create_file_with_data(ofstream& data_file){
+    void Create_file_with_data(fstream& data_file){
         MEMORYSTATUSEX statex;
         statex.dwLength = sizeof (statex);
         GlobalMemoryStatusEx (&statex);
             for(const auto & simple_object : simple_objects) {
-                data_file<<simple_objects.size()<<","<<statex.dwMemoryLoad<<","<<
-                statex.ullAvailPhys<<","<<simple_object->getValue()<<","<<
-                simple_object.use_count()<<","<<count_deleted;
-                data_file<<endl;
-                data_file.flush();
+                if(simple_object != nullptr) {
+                    data_file << simple_objects.size() << "," <<
+                              statex.dwMemoryLoad << "," <<
+                              statex.ullAvailPhys << "," << simple_object->getValue() << "," <<
+                              simple_object.use_count()<<","<<sizeof(simple_object)<<","<<count_deleted;
+                    data_file<<endl;
+                    data_file.flush();
+                }
             }
             count_deleted = 0;
-//        data_file.flush();
         }
 
 };

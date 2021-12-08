@@ -1,33 +1,56 @@
 #include <iostream>
 #include <thread>
 #include <mutex>
-#include <windows.h>
-#include <stdio.h>
-#include <psapi.h>
 #include "GC_algorithm.cpp"
+
 using namespace std;
 
+static int counter = 0;
+mutex m1;
+
+void do_something(int times, GC_Generator &generator){
+    for (int i = 0; i < times; i++) {
+        generator.Add_some_link();
+    }
+}
+void clear_something(int times, GC_Generator &generator){
+    for (int i = 0; i < times; i++) {
+        generator.Delete_some_link();
+    }
+}
+
+
 int main() {
-    ofstream data_file;
-    data_file.open("../data.csv",ios_base::app);
-    data_file <<"Total objects,Memory in use in %, Available memory,Object name,Links,Links deleted"<<endl;
+
     int objects_quantity = 100;
     GC_Generator generator;
     generator.Add_objects(objects_quantity);
+    fstream data_file;
+    data_file.open("../data.csv",ios::app);
+    data_file <<"Total objects,Memory in use in %, Available memory,Object name,Links,Object size,Links deleted"<<endl;
+    generator.Create_file_with_data(data_file);
     if(data_file.is_open()) {
-        for (int i = 0; i < 100; i++) {
-            generator.Add_some_link();
-        }
+
+        m1.lock();
+        thread t1(do_something, 10000, ref(generator));
+        this_thread::sleep_for(chrono::milliseconds(1000));
+        m1.unlock();
+
         generator.Create_file_with_data(data_file);
-        for (int i = 0; i < 200; i++) {
-            generator.Add_some_link();
-        }
+
+        m1.lock();
+        thread t2(clear_something, 200, ref(generator));
+        this_thread::sleep_for(chrono::milliseconds(100));
+        m1.unlock();
+
         generator.Create_file_with_data(data_file);
-        for (int i = 0; i < 50; i++) {
-            generator.Delete_some_link();
-        }
-        generator.Create_file_with_data(data_file);
+
+        t1.join();
+        t2.join();
+
     }
     data_file.close();
+
+
     return 0;
 }
