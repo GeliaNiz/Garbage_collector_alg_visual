@@ -29,7 +29,7 @@ int main() {
 
     //Открываем поток записи данных в файл
     fstream data_file;
-    data_file.open("../data.csv",ios::app);
+    data_file.open("../data.csv",ios::app| ios::ate);
     data_file <<"Total objects,Total memory in use,Object name,Links,Object size,Links deleted"<<endl;
 
     generator.Create_file_with_data(data_file);
@@ -41,16 +41,17 @@ int main() {
         m1.lock();
         thread t1(do_something, 1000, ref(generator));
         this_thread::sleep_for(chrono::milliseconds(100));
+        generator.Create_file_with_data(data_file);
         m1.unlock();
 
         generator.Create_file_with_data(data_file);
 
         m1.lock();
         thread t2(clear_something, 200, ref(generator));
+        generator.Create_file_with_data(data_file);
         this_thread::sleep_for(chrono::milliseconds(100));
         m1.unlock();
 
-        generator.Create_file_with_data(data_file);
 
         t1.join();
         t2.join();
