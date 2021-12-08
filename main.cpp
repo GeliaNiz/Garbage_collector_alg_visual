@@ -3,6 +3,7 @@
 #include <mutex>
 #include "GC_algorithm.cpp"
 
+
 using namespace std;
 
 static int counter = 0;
@@ -27,7 +28,7 @@ int main() {
     generator.Add_objects(objects_quantity);
     fstream data_file;
     data_file.open("../data.csv",ios::app);
-    data_file <<"Total objects,Memory in use in %, Available memory,Object name,Links,Object size,Links deleted"<<endl;
+    data_file <<"Total objects,Memory in use in %,Total memory in use,Object name,Links,Object size,Links deleted"<<endl;
     generator.Create_file_with_data(data_file);
     if(data_file.is_open()) {
 
@@ -50,7 +51,6 @@ int main() {
 
     }
     data_file.close();
-
 
     return 0;
 }

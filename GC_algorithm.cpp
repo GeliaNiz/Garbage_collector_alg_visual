@@ -6,6 +6,8 @@
 #include <shared_mutex>
 #include <fstream>
 #include <windows.h>
+#include <sys/time.h>
+
 
 
 using namespace std;
@@ -50,9 +52,7 @@ public:
 
     void Delete_some_link(){
         int index = rand()%simple_objects.size();
-        if(simple_objects[index].use_count()>1) {
             simple_objects[index].reset();
-        }
         cout<<"delete "<<simple_objects[index]<<"size "<<simple_objects.size()<<endl;
         count_deleted++;
     }
@@ -87,8 +87,8 @@ public:
                 if(simple_object != nullptr) {
                     data_file << simple_objects.size() << "," <<
                               statex.dwMemoryLoad << "," <<
-                              statex.ullAvailPhys << "," << simple_object->getValue() << "," <<
-                              simple_object.use_count()<<","<<sizeof(simple_object)<<","<<count_deleted;
+                              simple_objects.size()*sizeof(simple_object)<< "," << simple_object->getValue() << "," <<
+                              simple_object.use_count()<<","<<sizeof(simple_objects)<<","<<count_deleted;
                     data_file<<endl;
                     data_file.flush();
                 }

@@ -23,6 +23,8 @@ fstream
 -
 windows.h
 -
+sys/time.h
+-
 
 C:/Users/dom/Desktop/GC course work/AlgorithOnC/main.cpp
 iostream
