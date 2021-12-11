@@ -1,6 +1,7 @@
 import dash
 from dash import dcc
 from dash import html
+import cufflinks as cf
 import pandas as pd
 import plotly
 import plotly.graph_objects as go
@@ -12,8 +13,6 @@ from dash.dependencies import Input, Output
 from pyorbital.orbital import Orbital
 
 
-satellite = Orbital('TERRA')
-# cf.go_offline()
 cf.set_config_file(offline=False, world_readable=True)
 app = dash.Dash(__name__)
 app.layout = html.Div(
@@ -33,14 +32,14 @@ app.layout = html.Div(
 @app.callback(Output('live-update-graph', 'figure'),
               Input('interval-component', 'n_intervals'))
 def update_graph_live(n):
-    satellite = Orbital('TERRA')
     data = pd.read_csv('data.csv')
 
-    fig = plotly.subplots.make_subplots(rows=2, cols=1, vertical_spacing=0.2)
+    fig = plotly.subplots.make_subplots(rows=3, cols=1, row_heights=[400, 500, 500], vertical_spacing=0.1)
     fig['layout']['margin'] = {
-        'l': 30, 'r': 10, 'b': 30, 't': 10
+        'l': 10, 'r': 10, 'b': 10, 't': 10
     }
     fig['layout']['legend'] = {'x': 0, 'y': 1, 'xanchor': 'left'}
+    fig['layout'].update(height=800, width=1400)
     print(data)
     format_date = []
     for i in data["Date"]:
@@ -58,6 +57,13 @@ def update_graph_live(n):
         'mode': 'lines+markers',
         'type': 'scatter'
     }, 2, 1)
+    fig.append_trace({
+        'y': data['Total memory in use'],
+        'x': data['Links deleted'],
+        'name': 'Memory in use x Links deleted',
+        'mode': 'lines+markers',
+        'type': 'scatter'
+    }, 3, 1)
 
     return fig
 
