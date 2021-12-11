@@ -5,28 +5,33 @@
 
 using namespace std;
 
-mutex m1;
-fstream data_file;
+bool flag = true;
 
-void write_data(fstream &file, GC_Generator &generator){
-    generator.Create_file_with_data(file);
-    this_thread::sleep_for(chrono::milliseconds(100));
+void write_data(ofstream &file, GC_Generator &generator){
+    while(flag) {
+        generator.Create_file_with_data(file);
+        this_thread::sleep_for(chrono::milliseconds(10000));
+    }
 }
+
 void do_something(int times, GC_Generator &generator){
-    for (int i = 0; i < times; i++) {
+    while (flag) {
         generator.Add_some_link();
-        this_thread::sleep_for(chrono::milliseconds(100));
+        this_thread::sleep_for(chrono::milliseconds(3000));
     }
 }
 void clear_something(int times, GC_Generator &generator){
-    for (int i = 0; i < times; i++) {
+    while (flag) {
         generator.Delete_some_link();
-        this_thread::sleep_for(chrono::milliseconds(100));
+        this_thread::sleep_for(chrono::milliseconds(1000));
     }
 }
+
 void add_objects(int quantity, GC_Generator &generator){
-    generator.Add_objects(quantity);
-    this_thread::sleep_for(chrono::milliseconds(300));
+    while(flag) {
+        generator.Add_objects(quantity);
+        this_thread::sleep_for(chrono::milliseconds(5000));
+    }
 }
 int main() {
 
@@ -38,15 +43,12 @@ int main() {
     generator.Add_objects(objects_quantity);
 
     //Открываем поток записи данных в файл
-
-    data_file.open("../data.csv",ios::app| ios::ate);
-    data_file <<"Total objects,Total memory in use,Object name,Links,Object size,Links deleted"<<endl;
+    ofstream data_file;
+    data_file.open("../data.csv", ios::app);
+    data_file <<"Total objects,Total memory in use,Object name,Links,Object size,Links deleted,Date"<<endl;
     generator.Create_file_with_data(data_file);
-
     if(data_file.is_open()) {
-
     //Работа с потоками
-
         thread t1(do_something, 70, ref(generator));
 
         thread t2(clear_something,30, ref(generator));
@@ -55,12 +57,15 @@ int main() {
 
         thread t4(write_data, ref(data_file), ref(generator));
 
+        cin.ignore();
+        flag = false;
+
         t1.join();
         t2.join();
         t3.join();
         t4.join();
     }
-    generator.Create_file_with_data(data_file);
+ generator.Create_file_with_data(data_file);
     data_file.close();
 
     return 0;

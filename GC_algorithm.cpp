@@ -2,6 +2,7 @@
 #include <vector>
 #include <memory>
 #include <cstdlib>
+#include <ctime>
 #include <windows.h>
 #include <fstream>
 #include <sys/time.h>
@@ -81,12 +82,13 @@ public:
     }
 
     //Записывает параметры в файл
-    void Create_file_with_data(fstream& data_file){
+    void Create_file_with_data(ofstream& data_file){
             for(const auto & simple_object : simple_objects) {
                 if(simple_object != nullptr) {
                     data_file << simple_objects.size() << "," <<
                               simple_objects.size()*sizeof(simple_object)<< "," << simple_object->getValue() << "," <<
-                              simple_object.use_count()<<","<<sizeof(simple_objects)<<","<<count_deleted;
+                              simple_object.use_count()<<","<<sizeof(simple_objects)<<","<<count_deleted
+                              <<","<<time(nullptr);
                     data_file<<endl;
                     data_file.flush();
                 }
