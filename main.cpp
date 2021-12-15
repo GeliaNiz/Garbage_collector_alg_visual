@@ -14,29 +14,29 @@ void write_data(ofstream &file, GC_Generator &generator){
     }
 }
 
-void do_something(int times, GC_Generator &generator){
+void do_something(GC_Generator &generator){
     while (flag) {
         generator.Add_some_link();
-        this_thread::sleep_for(chrono::milliseconds(3000));
+        this_thread::sleep_for(chrono::milliseconds(5000));
     }
 }
-void clear_something(int times, GC_Generator &generator){
+void clear_something(GC_Generator &generator){
     while (flag) {
         generator.Delete_some_link();
-        this_thread::sleep_for(chrono::milliseconds(1000));
+       this_thread::sleep_for(chrono::milliseconds(100));
     }
 }
 
 void add_objects(int quantity, GC_Generator &generator){
     while(flag) {
         generator.Add_objects(quantity);
-        this_thread::sleep_for(chrono::milliseconds(5000));
+        this_thread::sleep_for(chrono::milliseconds(10000));
     }
 }
 int main() {
 
     //Стартовое число объектов
-    int objects_quantity = 40;
+    int objects_quantity = 5;
 
     //Создаем генератор и стартовые объекты
     GC_Generator generator;
@@ -49,11 +49,11 @@ int main() {
     generator.Create_file_with_data(data_file);
     if(data_file.is_open()) {
     //Работа с потоками
-        thread t1(do_something, 70, ref(generator));
+        thread t1(do_something,ref(generator));
 
-        thread t2(clear_something,30, ref(generator));
+        thread t2(clear_something, ref(generator));
 
-        thread t3(add_objects,40,ref(generator));
+       thread t3(add_objects,3,ref(generator));
 
         thread t4(write_data, ref(data_file), ref(generator));
 

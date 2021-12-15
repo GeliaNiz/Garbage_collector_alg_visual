@@ -28,7 +28,6 @@ app.layout = html.Div(
     ])
 )
 
-
 @app.callback(Output('live-update-graph', 'figure'),
               Input('interval-component', 'n_intervals'))
 def update_graph_live(n):
@@ -52,17 +51,16 @@ def update_graph_live(n):
     }, 1, 1)
     fig.append_trace({
         'y': data['Total objects'],
-        'x': format_date ,
+        'x': format_date,
         'name': 'Objects quantity x Time',
         'mode': 'lines+markers',
         'type': 'scatter'
     }, 2, 1)
     fig.append_trace({
-        'y': data['Total memory in use'],
-        'x': data['Links deleted'],
+        'x': data['Total memory in use'],
+        'y': data['Links deleted'],
         'name': 'Memory in use x Links deleted',
-        'mode': 'lines+markers',
-        'type': 'scatter'
+        'type': 'bar'
     }, 3, 1)
 
     return fig
