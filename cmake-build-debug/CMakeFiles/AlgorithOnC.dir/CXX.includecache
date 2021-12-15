@@ -23,6 +23,10 @@ fstream
 -
 sys/time.h
 -
+random
+-
+algorithm
+-
 
 C:/Users/dom/Desktop/GC course work/AlgorithOnC/main.cpp
 iostream
