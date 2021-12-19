@@ -54,7 +54,7 @@ public:
 
     //Добавляет новый умный указатели
     void Add_some_link(){
-        uniform_int_distribution<> dist(1,simple_objects.size());
+        uniform_int_distribution<> dist(0,simple_objects.size()-1);
         random_device rand;
         int index = dist(rand);
        weak_ptr<Simple_object> pointer = simple_objects[index];
@@ -66,17 +66,26 @@ public:
     //функции достигает 0, то удаляется и сам объект. Однако shared_ptr указатели не удаляются, если они зациклены.
     // Именно поэтому удаляем и weak_ptr и вместе с ним освобождаем даже память, попавшую в такой цикл.
     void Delete_some_link(){
-        uniform_int_distribution<> dist(0,simple_objects.size());
-        random_device rand;
-        int index = dist(rand);
-        if(simple_objects[index].get() == nullptr) {
-            simple_objects.erase(simple_objects.cbegin()+index-1);
+        for(int index = 0; index<simple_objects.size();index++) {
+            cout<<index<<" "<<simple_objects.size()<<endl;
+            if(simple_objects[index].use_count() != 0 && simple_objects[index].get()!= nullptr) {
+                if (simple_objects[index].unique()) {
+                    simple_objects_weak[index].reset();
+                    simple_objects.erase(simple_objects.cbegin() + index );
+                    simple_objects_weak.erase(simple_objects_weak.cbegin() + index );
+              }
+                simple_objects[index].reset();
+                simple_objects_weak[index].reset();
+            }
+            else {
+                if(simple_objects[index].get()== nullptr){
+                    cout<<"here"<<endl;
+                    simple_objects.erase(simple_objects.cbegin() + index );
+                    simple_objects_weak.erase(simple_objects_weak.cbegin() + index );
+                }
+                count_deleted++;
+            }
         }
-        else {
-            simple_objects_weak[index].reset();
-            simple_objects[index].reset();
-        }
-        count_deleted++;
     }
 
 
@@ -103,24 +112,27 @@ public:
     }
 
     //Записывает параметры в файл
-    void Create_file_with_data(ofstream& data_file){
-        int quantity =0;
-        for(int i=0;i<simple_objects.size();i++) {
-             if(simple_objects[i]!= nullptr){
-                quantity+=simple_objects[i].use_count();
+    void Create_file_with_data(ofstream& data_file) {
+        cout << "write" << endl;
+        int quantity = 0;
+        for (int i = 0; i < simple_objects.size(); i++) {
+            if (simple_objects[i] != nullptr) {
+                quantity += simple_objects[i].use_count();
             }
-        }
-            for(const auto & simple_object : simple_objects) {
-                if(simple_object != nullptr) {
-                    data_file << quantity << "," <<
-                              simple_objects.size()*sizeof(simple_object)<< "," << simple_object->getValue() << "," <<
-                              simple_object.use_count()<<","<<sizeof(simple_object)<<","<<count_deleted
-                              <<","<<time(nullptr);
-                    data_file<<endl;
+
+            for (const auto &simple_object : simple_objects) {
+                if (simple_object != nullptr) {
+                    data_file << simple_objects.size() << "," <<
+                              simple_objects.size() * sizeof(simple_object) << "," << simple_object->getValue() << ","
+                              <<
+                              simple_object.use_count() << "," << sizeof(simple_object) << "," << count_deleted
+                              << "," << time(nullptr);
+                    data_file << endl;
                     data_file.flush();
                 }
             }
         }
+    }
 
 };
 

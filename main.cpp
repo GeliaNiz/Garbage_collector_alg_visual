@@ -9,33 +9,37 @@ bool flag = true;
 
 void write_data(ofstream &file, GC_Generator &generator){
     while(flag) {
+        this_thread::sleep_for(chrono::milliseconds(300));
         generator.Create_file_with_data(file);
-        this_thread::sleep_for(chrono::milliseconds(3000));
+
     }
 }
 
 void do_something(GC_Generator &generator){
     while (flag) {
+        this_thread::sleep_for(chrono::milliseconds(3000));
         generator.Add_some_link();
-        this_thread::sleep_for(chrono::milliseconds(7000));
+
     }
 }
 void clear_something(GC_Generator &generator){
     while (flag) {
+        this_thread::sleep_for(chrono::milliseconds(500));
         generator.Delete_some_link();
-         this_thread::sleep_for(chrono::milliseconds(1000));
+
     }
 }
 
 void add_objects(int quantity, GC_Generator &generator){
     while(flag) {
+        this_thread::sleep_for(chrono::milliseconds(5000));
         generator.Add_objects(quantity);
-        this_thread::sleep_for(chrono::milliseconds(9000));
+
     }
 }
 int main() {
 
-    //Стартовое число объектов
+//    Стартовое число объектов
     int objects_quantity = 5;
 
     //Создаем генератор и стартовые объекты
@@ -46,14 +50,13 @@ int main() {
     ofstream data_file;
     data_file.open("../data.csv", ios::app);
     data_file <<"Total objects,Total memory in use,Object name,Links,Object size,Links deleted,Date"<<endl;
-    generator.Create_file_with_data(data_file);
     if(data_file.is_open()) {
     //Работа с потоками
         thread t1(do_something,ref(generator));
-
+//
         thread t2(clear_something, ref(generator));
 
-       thread t3(add_objects,5,ref(generator));
+       thread t3(add_objects,3,ref(generator));
 
         thread t4(write_data, ref(data_file), ref(generator));
 
@@ -65,7 +68,6 @@ int main() {
         t3.join();
         t4.join();
     }
- generator.Create_file_with_data(data_file);
     data_file.close();
 
     return 0;
