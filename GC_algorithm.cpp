@@ -44,7 +44,7 @@ public:
     //Добавляет стартовый набор объектов
     void Add_objects(int count){
         for(int i = count;i>0;i--){
-            simple_objects.push_back(static_cast<const shared_ptr<Simple_object>>(new Simple_object("Object"+to_string(i))));
+            simple_objects.push_back(static_cast <const shared_ptr<Simple_object>>(new Simple_object("Object"+to_string(i))));
         }
         for(const auto & simple_object : simple_objects){
             weak_ptr<Simple_object> pointer = simple_object;
@@ -69,8 +69,13 @@ public:
         uniform_int_distribution<> dist(0,simple_objects.size());
         random_device rand;
         int index = dist(rand);
-        simple_objects_weak[index].reset();
-        simple_objects[index].reset();
+        if(simple_objects[index].get() == nullptr) {
+            simple_objects.erase(simple_objects.cbegin()+index-1);
+        }
+        else {
+            simple_objects_weak[index].reset();
+            simple_objects[index].reset();
+        }
         count_deleted++;
     }
 

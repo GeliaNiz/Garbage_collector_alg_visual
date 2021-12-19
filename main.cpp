@@ -10,27 +10,27 @@ bool flag = true;
 void write_data(ofstream &file, GC_Generator &generator){
     while(flag) {
         generator.Create_file_with_data(file);
-        this_thread::sleep_for(chrono::milliseconds(10000));
+        this_thread::sleep_for(chrono::milliseconds(3000));
     }
 }
 
 void do_something(GC_Generator &generator){
     while (flag) {
         generator.Add_some_link();
-        this_thread::sleep_for(chrono::milliseconds(5000));
+        this_thread::sleep_for(chrono::milliseconds(7000));
     }
 }
 void clear_something(GC_Generator &generator){
     while (flag) {
         generator.Delete_some_link();
-       this_thread::sleep_for(chrono::milliseconds(100));
+         this_thread::sleep_for(chrono::milliseconds(1000));
     }
 }
 
 void add_objects(int quantity, GC_Generator &generator){
     while(flag) {
         generator.Add_objects(quantity);
-        this_thread::sleep_for(chrono::milliseconds(10000));
+        this_thread::sleep_for(chrono::milliseconds(9000));
     }
 }
 int main() {
@@ -53,7 +53,7 @@ int main() {
 
         thread t2(clear_something, ref(generator));
 
-       thread t3(add_objects,3,ref(generator));
+       thread t3(add_objects,5,ref(generator));
 
         thread t4(write_data, ref(data_file), ref(generator));
 
